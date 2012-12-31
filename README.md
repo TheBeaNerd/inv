@@ -1,0 +1,4 @@
+inv
+===
+
+multiplicative modular inverse
