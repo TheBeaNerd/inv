@@ -1,0 +1,1069 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass paper
+\begin_preamble
+\usepackage{tikz}
+\usepackage{pgf}
+\end_preamble
+\use_default_options false
+\begin_modules
+theorems-ams
+eqs-within-sections
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\float_placement h
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+A Multiplicative Algorithm for Computing Modular Inverses
+\end_layout
+
+\begin_layout Author
+David Greve
+\end_layout
+
+\begin_layout Date
+9/30/2012
+\end_layout
+
+\begin_layout Abstract
+The extended Euclidean algorithm is perhaps the oldest and most common method
+ for computing modular inverses.
+ However, because the algorithm employs a non-trival recursion and a combination
+ of multiplication and sutraction to construct a solution, it's correctness
+ is not immediately obvious.
+ We present a modified version of the extended Euclidean algorithm with
+ a simpler recusion that constructs modular inverses multiplicatively and
+ whose correctness follows directly from a much simpler inductive argument.
+\end_layout
+
+\begin_layout Section*
+The Modular Inverse
+\end_layout
+
+\begin_layout Standard
+The modular (or multiplicative) inverse of a number 
+\family typewriter
+a
+\family default
+ modulo 
+\family typewriter
+m
+\family default
+ is a number 
+\family typewriter
+x
+\family default
+ such that 
+\begin_inset Formula $a*x\equiv1\bmod{m}$
+\end_inset
+
+.
+ Such an x exists whenever gcd(a,m) = 1 (i.e.
+ 
+\family typewriter
+a
+\family default
+ and 
+\family typewriter
+m
+\family default
+ are relatively prime).
+ The following table lists the modular inverse for each number between 1
+ and 6 mod 7.
+ Note that if 
+\family typewriter
+x
+\family default
+ is the inverse of 
+\family typewriter
+a
+\family default
+, then 
+\family typewriter
+a
+\family default
+ must necessarily be the inverse of 
+\family typewriter
+x
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+a
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $x=a^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a*x$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $8\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $15\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $8\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $15\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $36\equiv1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Inverses Modulo 7
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When the modular inverse exists, division by 
+\family typewriter
+a
+\family default
+ modulo 
+\family typewriter
+m
+\family default
+ can be defined as multiplying by the inverse of 
+\family typewriter
+a
+\family default
+.
+ This is effectively the same relationship as holds between division and
+ multiplication by a reciporical in the reals.
+ In many ways the modular inverse behaves just like a standard multiplicative
+ inverse of 
+\family typewriter
+a
+\family default
+, even to the point of being being accurately expressed (and, from Euler's
+ theorem, computed) as 
+\begin_inset Formula $a^{-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section*
+The Extended Euclidean Algorithm
+\end_layout
+
+\begin_layout Standard
+The extended Euclidean algorithm offers an efficient method for computing
+ the value of 
+\family typewriter
+x
+\family default
+ for a given 
+\family typewriter
+a
+\family default
+ and 
+\family typewriter
+m
+\family default
+.
+ The algoritm actually solves a more general problem, the problem of finding
+ an 
+\family typewriter
+x
+\family default
+ and 
+\family typewriter
+y
+\family default
+ that satisfy Bézout's identify: 
+\begin_inset Formula $a*x+m*y=gcd(a,m)$
+\end_inset
+
+.
+ Note that, if gcd(a,m) = 1, the 
+\family typewriter
+x
+\family default
+ solution to Bézout's identity also provides the modular inverse of 
+\family typewriter
+a
+\family default
+ mod 
+\family typewriter
+m
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function extended_gcd(a,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+  if a=0
+\end_layout
+
+\begin_layout Plain Layout
+
+    return (0,1,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+  else
+\end_layout
+
+\begin_layout Plain Layout
+
+    (Q,r)   := divide(m,a)
+\end_layout
+
+\begin_layout Plain Layout
+
+    (x,y,g) := extended_gcd(r,a)
+\end_layout
+
+\begin_layout Plain Layout
+
+    return (y-Q*x,x,g)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Extended GCD pseudo code
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+A Multiplicative Algorithm
+\end_layout
+
+\begin_layout Standard
+Consider the problem of approximating 
+\family typewriter
+m
+\family default
+ using multiples of 
+\family typewriter
+a
+\family default
+ assuming that 
+\family typewriter
+a
+\family default
+ is less than and relatively prime to 
+\family typewriter
+m
+\family default
+.
+ There are two multiples of 
+\family typewriter
+a
+\family default
+ that are particularly close to 
+\family typewriter
+m
+\family default
+, one that is just less than 
+\family typewriter
+m
+\family default
+ and the other that is just greater than
+\family typewriter
+ m
+\family default
+.
+ This situation is represented in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:number-line"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tikzpicture}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [<-|][thick] (0,0) -- (3,0);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [|->][thick] (3,0) -- (7,0);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [|-]         (1.5,0) -- (3,0);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [|-]         (5.5,0) -- (7,0);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node [below] at (1.5,-0.1) {${a 
+\backslash
+times Q_{-1}}$};
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node [below] at (5.5,-0.1) {${a 
+\backslash
+times Q_{+1}}$};
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node [below] at (3,-0.1) { ${m}$ };
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [<-|] (1.5,0.5) -- (3,0.5);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+draw [|->] (3,0.5) -- (5.5,0.5);
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node [above] at (2.25,0.5) { ${r_{-1}}$ };
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node [above] at (4.25,0.5) { ${r_{+1}}$ };
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tikzpicture}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:number-line"
+
+\end_inset
+
+Possible quotients and remainders for 
+\begin_inset Formula $m/a$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We call the two multipliers of 
+\family typewriter
+a
+\family default
+, labled 
+\begin_inset Formula $Q_{-1}$
+\end_inset
+
+and 
+\begin_inset Formula $Q_{+1}$
+\end_inset
+
+in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:number-line"
+
+\end_inset
+
+, 
+\emph on
+quotients
+\emph default
+ of 
+\begin_inset Formula $m/a$
+\end_inset
+
+.
+ Specifically we refer to 
+\begin_inset Formula $Q_{-1}$
+\end_inset
+
+ as the 1
+\begin_inset Formula $^{\text{}st}$
+\end_inset
+
+ lesser quotient and 
+\begin_inset Formula $Q_{+1}$
+\end_inset
+
+as the 1
+\begin_inset Formula $^{\text{}st}$
+\end_inset
+
+ greater quotient of 
+\begin_inset Formula $m/a$
+\end_inset
+
+.
+ More generally, we define a k
+\begin_inset Formula $^{\text{}th}$
+\end_inset
+
+ quotient of 
+\begin_inset Formula $m/a$
+\end_inset
+
+ as a multiplier of 
+\family typewriter
+a
+\family default
+ such that the distance between the resulting product and the k
+\begin_inset Formula $^{\text{}th}$
+\end_inset
+
+ multiple of 
+\family typewriter
+m
+\family default
+ is less than 
+\family typewriter
+a
+\family default
+.
+ The quotient is the lesser quotient if the product is less than 
+\begin_inset Formula $k\times m$
+\end_inset
+
+ and the greater quotient if it is greater than this product.
+ The k
+\begin_inset Formula $^{\text{}th}$
+\end_inset
+
+ 
+\emph on
+remainders
+\emph default
+ of 
+\begin_inset Formula $m/a$
+\end_inset
+
+ are defined as 
+\begin_inset Formula $r_{-k}=k\times m-a\times Q_{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{+k}=a\times Q_{+1}-k\times m$
+\end_inset
+
+.
+ The 1
+\begin_inset Formula $^{\text{}st}$
+\end_inset
+
+ remainders of 
+\begin_inset Formula $m/a$
+\end_inset
+
+ are labled as 
+\begin_inset Formula $r_{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{+1}$
+\end_inset
+
+ in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:number-line"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+call the largest multiple of a that is less than m 
+\begin_inset Formula $Q_{-1}$
+\end_inset
+
+.
+ The algorithm is derivative of the Euclidian algorithm.
+ We say that the algorithm is multiplicative because the inverse is computed
+ as a product of some number of factors.
+ The factors that we use are based on the quotient of the modulus and the
+ denominator.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+function inv(a,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+  if a=1
+\end_layout
+
+\begin_layout Plain Layout
+
+    return 1
+\end_layout
+
+\begin_layout Plain Layout
+
+  else
+\end_layout
+
+\begin_layout Plain Layout
+
+    Q := quotient(m,a)
+\end_layout
+
+\begin_layout Plain Layout
+
+    r := (Q*a) % m
+\end_layout
+
+\begin_layout Plain Layout
+
+    x := (Q*extended_gcd(r,m)) % m
+\end_layout
+
+\begin_layout Plain Layout
+
+    return x
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Multiplicative algorithm pseudocode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Euclidian 
+\end_layout
+
+\begin_layout Standard
+The choice of quotient.
+ The method of finding an appropriate quotient may depend on the objective.
+ 
+\end_layout
+
+\begin_layout Standard
+The following method ensures O(log v) factors works only when the modulus
+ is prime.
+\end_layout
+
+\begin_layout Section*
+Applications
+\end_layout
+
+\begin_layout Standard
+The primary contribution of the multiplicative algorithm may simply be that
+ it is easier to explain than the Euclidian algorithm.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+/a = Q /r
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When factoring a number, we aren't concerned about the powers to which those
+ factors are taken.
+ For such purposes we would say that N, N^2 and N^-1 are all have a factor
+ base of size N.
+\end_layout
+
+\begin_layout Standard
+One immediate consequence of the the multiplicative algorithm is the following
+ lemma:
+\end_layout
+
+\begin_layout Lemma
+For prime modulus, P, let S = 
+\begin_inset Formula $\sqrt{P}$
+\end_inset
+
+ represent the square root of the modulus.
+ Every number, V, greater than S can be represented as a product factor
+ bases less than S and the upper bound on the number of factor bases required
+ is 
+\begin_inset Formula $1+\lceil log_{2}(V/S)\rceil$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Joe
+\end_layout
+
+\begin_layout Lemma
+Every number, V, less than S can be factored into 3 factor bases less than
+ S.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document
