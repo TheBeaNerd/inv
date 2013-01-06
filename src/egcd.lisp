@@ -9,17 +9,17 @@
   (declare (type (satisfies posnatp) a b))
   (mv (ndiv a b) (nmod a b)))
 
-(defun egcd (d p)
-  (declare (type (satisfies natp) p d)
-	   (xargs :guard (< d p)
+(defun egcd (a m)
+  (declare (type (satisfies natp) m a)
+	   (xargs :guard (< a m)
 		  :verify-guards nil
-		  :measure (+ (nfix p) (nfix d))))
-  (let ((p (nfix p))
-	(d (nfix d)))
-    (if (or (<= p d) (zp p) (zp d)) (mv p 0 1)
-      (met ((q r) (divide p d))
-	(met ((g z s) (egcd r d))
-	  (mv g (- s (* q z)) z))))))
+		  :measure (+ (nfix m) (nfix a))))
+  (let ((m (nfix m))
+	(a (nfix a)))
+    (if (or (<= m a) (zp m) (zp a)) (mv m 0 1)
+      (met ((q r) (divide m a))
+	(met ((g x y) (egcd r a))
+	  (mv g (- y (* q x)) x))))))
 
 (defthm integerp-egcd
   (implies

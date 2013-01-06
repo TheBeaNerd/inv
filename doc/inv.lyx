@@ -66,15 +66,15 @@ David Greve
 \begin_layout Abstract
 The extended Euclidean algorithm is perhaps the oldest and most common method
  for computing modular inverses.
- However, because the algorithm employs a non-trival recursion and a combination
- of multiplication and sutraction to construct a solution, it's correctness
- is not immediately obvious.
- We present a modified version of the extended Euclidean algorithm with
- a simpler recusion that constructs modular inverses multiplicatively and
- whose correctness follows directly from a much simpler inductive argument.
+ The algorithm employs a clever recursion and a combination of multiplication
+ and sutraction to construct a solution.
+ While elegant, the correctness of the technique is not immediately obvious.
+ We present an alternative algorithm with a simpler recusion that constructs
+ modular inverses multiplicatively and whose correctness follows directly
+ from a much simpler inductive argument.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 The Modular Inverse
 \end_layout
 
@@ -131,7 +131,7 @@ x
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -405,7 +405,7 @@ a
 \family typewriter
 m
 \family default
- can be defined as multiplying by the inverse of 
+ can be implemented by multiplying by the inverse of 
 \family typewriter
 a
 \family default
@@ -426,7 +426,7 @@ a
  
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 The Extended Euclidean Algorithm
 \end_layout
 
@@ -459,7 +459,11 @@ y
 \end_inset
 
 .
- Note that, if gcd(a,m) = 1, the 
+ Note that, if 
+\begin_inset Formula $gcd(a,m)=1$
+\end_inset
+
+, the 
 \family typewriter
 x
 \family default
@@ -478,7 +482,7 @@ m
 \begin_inset Float algorithm
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -498,7 +502,7 @@ begin{verbatim}
 
 \begin_layout Plain Layout
 
-function extended_gcd(a,m)
+function egcd(a,m)
 \end_layout
 
 \begin_layout Plain Layout
@@ -508,7 +512,7 @@ function extended_gcd(a,m)
 
 \begin_layout Plain Layout
 
-    return (0,1,m)
+    return (m,0,1)
 \end_layout
 
 \begin_layout Plain Layout
@@ -518,17 +522,17 @@ function extended_gcd(a,m)
 
 \begin_layout Plain Layout
 
-    (Q,r)   := divide(m,a)
+    (q,r)   := divide(m,a)
 \end_layout
 
 \begin_layout Plain Layout
 
-    (x,y,g) := extended_gcd(r,a)
+    (g,x,y) := egcd(r,a)
 \end_layout
 
 \begin_layout Plain Layout
 
-    return (y-Q*x,x,g)
+    return (g,y-q*x,x)
 \end_layout
 
 \begin_layout Plain Layout
@@ -564,160 +568,459 @@ Extended GCD pseudo code
 
 \end_layout
 
-\begin_layout Section*
-A Multiplicative Algorithm
+\begin_layout Standard
+This algorithm is called the Extended Euclidean algorithm because it extends
+ the basic Euclidean algorithm for computing greatest common divisors (the
+ first return value) to also return x and y values (the second and third
+ return values) that satisfy Bezout's identity.
+ 
 \end_layout
 
 \begin_layout Standard
-Consider the problem of approximating 
-\family typewriter
-m
-\family default
- using multiples of 
-\family typewriter
-a
-\family default
- assuming that 
-\family typewriter
-a
-\family default
- is less than and relatively prime to 
-\family typewriter
-m
-\family default
-.
- There are two multiples of 
-\family typewriter
-a
-\family default
- that are particularly close to 
-\family typewriter
-m
-\family default
-, one that is just less than 
-\family typewriter
-m
-\family default
- and the other that is just greater than
-\family typewriter
- m
-\family default
-.
- This situation is represented in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:number-line"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
+\begin_inset Float table
 wide false
 sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-
-
-\backslash
-begin{tikzpicture}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-draw [<-|][thick] (0,0) -- (3,0);
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-draw [|->][thick] (3,0) -- (7,0);
-\end_layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="7">
+<features>
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<column alignment="center" valignment="middle" width="0">
+<row>
+<cell alignment="center" valignment="middle" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-draw [|-]         (1.5,0) -- (3,0);
+a
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-draw [|-]         (5.5,0) -- (7,0);
+m
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Formula $m=q*a+r$
+\end_inset
 
 
-\backslash
-node [below] at (1.5,-0.1) {${a 
-\backslash
-times Q_{-1}}$};
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Formula $g=a*x+m*y$
+\end_inset
 
 
-\backslash
-node [below] at (5.5,-0.1) {${a 
-\backslash
-times Q_{+1}}$};
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-node [below] at (3,-0.1) { ${m}$ };
+g
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-draw [<-|] (1.5,0.5) -- (3,0.5);
+x
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-draw [|->] (3,0.5) -- (5.5,0.5);
+y
 \end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-node [above] at (2.25,0.5) { ${r_{-1}}$ };
+0
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-
-
-\backslash
-node [above] at (4.25,0.5) { ${r_{+1}}$ };
+1
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Formula $1=1*0+1$
+\end_inset
 
 
-\backslash
-end{tikzpicture}
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1=0*0+1*1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $2=1*1+1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1=1*1+2*0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $3=1*2+1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1=-2*1+3*1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5=1*3+2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1=3*2-5*1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $13=2*5+3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="middle" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1=-5*5+13*2$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -728,14 +1031,8 @@ end{tikzpicture}
 \begin_inset Caption
 
 \begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:number-line"
-
-\end_inset
-
-Possible quotients and remainders for 
-\begin_inset Formula $m/a$
+Extended GCD computation of 
+\begin_inset Formula $5^{-1}\mod13$
 \end_inset
 
 
@@ -752,26 +1049,236 @@ Possible quotients and remainders for
 \end_layout
 
 \begin_layout Standard
-We call the two multipliers of 
+The inductive proof of correctness hinges on preserving as an invariant
+ a weak form of Bezout's identity: the value 
+\begin_inset Formula $g=a*x+m*y$
+\end_inset
+
+ divides both 
 \family typewriter
 a
 \family default
-, labled 
-\begin_inset Formula $Q_{-1}$
+ and 
+\family typewriter
+m
+\family default
+, though it need not necessarily be the greatest such divisor.
+\end_layout
+
+\begin_layout Standard
+When 
+\begin_inset Formula $a=0$
 \end_inset
 
-and 
-\begin_inset Formula $Q_{+1}$
-\end_inset
-
-in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:number-line"
-
+ the function terminates immediately and returns 
+\begin_inset Formula $g=m$
 \end_inset
 
 , 
+\begin_inset Formula $x=0$
+\end_inset
+
+ and 
+\begin_inset Formula $y=1$
+\end_inset
+
+.
+ Since 
+\begin_inset Formula $m=a*0+m*1$
+\end_inset
+
+ divides both 
+\family typewriter
+a
+\family default
+ and 
+\family typewriter
+m
+\family default
+, our invariant holds in the base case.
+\end_layout
+
+\begin_layout Standard
+When 
+\begin_inset Formula $a>0$
+\end_inset
+
+, a is divided by m to produce a quotient, q, and remainder, r, such that
+ 
+\begin_inset Formula $m=q*a+r$
+\end_inset
+
+.
+ Assuming 
+\begin_inset Formula $0<m<a$
+\end_inset
+
+ this remainder will be stricly less than a and, since 
+\begin_inset Formula $r<a$
+\end_inset
+
+, we can deduce that the recursion terminates.
+ Our inductive hypothesis is that 
+\begin_inset Formula $g=r*x'+a*y'$
+\end_inset
+
+ divides both r and a.
+ The algorithm returns 
+\begin_inset Formula $x=y'-q*x'$
+\end_inset
+
+ and 
+\begin_inset Formula $y=x'$
+\end_inset
+
+.
+ Using this we simplify our common divisor:
+\begin_inset Formula \begin{align*}
+\begin{array}{cl}
+g & =a*x+m*y\\
+ & =a(y'-q*x')+m*x'\\
+ & =a*y'-a*q*x'+m*x'\\
+ & =(m-q*a)x'+a*y'\end{array}\end{align*}
+
+\end_inset
+
+Recall that we can express 
+\family typewriter
+m
+\family default
+ in terms of the quotient and remainder, 
+\begin_inset Formula $m=q*a+r$
+\end_inset
+
+.
+ Rearranging this equality we find 
+\begin_inset Formula $(m-q*a)=r$
+\end_inset
+
+.
+ Applying this substitution, our divisor reduces to:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{align*}
+g=r*x'+a*y'\end{align*}
+
+\end_inset
+
+We know from our inductive hypothesis that this divides both r and a and
+ thus we conclude that our original divisor, 
+\begin_inset Formula $g=a*x+m*y$
+\end_inset
+
+ must also divide both r and a.
+ However, if g divides both r and a, it must also divide both 
+\family typewriter
+a
+\family default
+ and 
+\begin_inset Formula $m=q*a+r$
+\end_inset
+
+ since m is a linear combination of 
+\family typewriter
+r
+\family default
+ and 
+\family typewriter
+a
+\family default
+.
+ This satisfies our original obligation and proves the invariant.
+ Incorporating the assumption that the greatest common divisor of 
+\family typewriter
+a
+\family default
+ and 
+\family typewriter
+m
+\family default
+ is 1, we may conclude that 
+\begin_inset Formula $a*x+m*y=1$
+\end_inset
+
+ and therefore 
+\family typewriter
+x
+\family default
+ is the multiplicative inverse of 
+\family typewriter
+a
+\family default
+ mod 
+\family typewriter
+m
+\family default
+.
+\end_layout
+
+\begin_layout Section
+A Multiplicative Algorithm
+\end_layout
+
+\begin_layout Standard
+Consider the result, 
+\family typewriter
+r
+\family default
+, of the product of 
+\family typewriter
+a
+\family default
+ and an integer 
+\family typewriter
+q
+\family default
+ mod 
+\family typewriter
+m
+\family default
+.
+\begin_inset Formula \begin{equation}
+a*q\equiv r\mod m\label{eq:product}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is possible to choose values 
+\family typewriter
+q
+\family default
+ such that 
+\family typewriter
+r
+\family default
+ is less than 
+\family typewriter
+a
+\family default
+.
+ For any non-zero 
+\family typewriter
+k
+\family default
+ not divisible by 
+\family typewriter
+a
+\family default
+, the integers 
+\begin_inset Formula $\lceil(k*m)/a\rceil$
+\end_inset
+
+ all have this property.
+ The integers 
+\begin_inset Formula $(-\lfloor(k*m)/a\rfloor)$
+\end_inset
+
+ also have this property.
+ We call such integers 
 \emph on
 quotients
 \emph default
@@ -780,116 +1287,88 @@ quotients
 \end_inset
 
 .
- Specifically we refer to 
-\begin_inset Formula $Q_{-1}$
-\end_inset
-
- as the 1
-\begin_inset Formula $^{\text{}st}$
-\end_inset
-
- lesser quotient and 
-\begin_inset Formula $Q_{+1}$
-\end_inset
-
-as the 1
-\begin_inset Formula $^{\text{}st}$
-\end_inset
-
- greater quotient of 
-\begin_inset Formula $m/a$
-\end_inset
-
-.
- More generally, we define a k
-\begin_inset Formula $^{\text{}th}$
-\end_inset
-
- quotient of 
-\begin_inset Formula $m/a$
-\end_inset
-
- as a multiplier of 
-\family typewriter
-a
-\family default
- such that the distance between the resulting product and the k
-\begin_inset Formula $^{\text{}th}$
-\end_inset
-
- multiple of 
-\family typewriter
-m
-\family default
- is less than 
-\family typewriter
-a
-\family default
-.
- The quotient is the lesser quotient if the product is less than 
-\begin_inset Formula $k\times m$
-\end_inset
-
- and the greater quotient if it is greater than this product.
- The k
-\begin_inset Formula $^{\text{}th}$
-\end_inset
-
- 
-\emph on
-remainders
-\emph default
- of 
-\begin_inset Formula $m/a$
-\end_inset
-
- are defined as 
-\begin_inset Formula $r_{-k}=k\times m-a\times Q_{-1}$
-\end_inset
-
- and 
-\begin_inset Formula $r_{+k}=a\times Q_{+1}-k\times m$
-\end_inset
-
-.
- The 1
-\begin_inset Formula $^{\text{}st}$
-\end_inset
-
- remainders of 
-\begin_inset Formula $m/a$
-\end_inset
-
- are labled as 
-\begin_inset Formula $r_{-1}$
-\end_inset
-
- and 
-\begin_inset Formula $r_{+1}$
-\end_inset
-
- in Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:number-line"
-
-\end_inset
-
-.
- 
 \end_layout
 
 \begin_layout Standard
-call the largest multiple of a that is less than m 
-\begin_inset Formula $Q_{-1}$
+Taking the reciporical of equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:product"
+
+\end_inset
+
+ and multiplying both sides by q results in equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:quotient"
+
+\end_inset
+
+:
+\begin_inset Formula \begin{equation}
+1/a\equiv q/r\mod m\label{eq:quotient}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For notational convenience, allow the symbol 
+\family typewriter
+/
+\family default
+ to designate the unary multiplicative inverse operator.
+\begin_inset Formula \begin{equation}
+/a\equiv q*/r\mod m\label{eq:operator}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:operator"
+
+\end_inset
+
+ suggests a recursive technique for computing the modular inverse of 
+\family typewriter
+a
+\family default
+.
+ If 
+\begin_inset Formula $a=1$
+\end_inset
+
+, we are done.
+ If not, choose an integer quotient q such that 
+\begin_inset Formula $a*q\equiv r<a\mod m$
 \end_inset
 
 .
- The algorithm is derivative of the Euclidian algorithm.
- We say that the algorithm is multiplicative because the inverse is computed
- as a product of some number of factors.
- The factors that we use are based on the quotient of the modulus and the
- denominator.
+ Then repeat the procedure using 
+\family typewriter
+r
+\family default
+ in place of 
+\family typewriter
+a
+\family default
+.
+ The modular inverse of 
+\family typewriter
+a
+\family default
+ is simply the product of the quotients that drive 
+\family typewriter
+a
+\family default
+ to 1.
+ This algrithm is codified below.
 \end_layout
 
 \begin_layout Standard
@@ -920,7 +1399,7 @@ function inv(a,m)
 
 \begin_layout Plain Layout
 
-  if a=1
+  if a<=1
 \end_layout
 
 \begin_layout Plain Layout
@@ -935,17 +1414,22 @@ function inv(a,m)
 
 \begin_layout Plain Layout
 
-    Q := quotient(m,a)
+    q := quotient(m,a)
 \end_layout
 
 \begin_layout Plain Layout
 
-    r := (Q*a) % m
+    r := a*q % m
 \end_layout
 
 \begin_layout Plain Layout
 
-    x := (Q*extended_gcd(r,m)) % m
+    v := inv(r,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+    x := q*v % m
 \end_layout
 
 \begin_layout Plain Layout
@@ -977,31 +1461,94 @@ Multiplicative algorithm pseudocode
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-The Euclidian 
+The proof of correctness follows from simple induction.
+ Our invariant is that the function returns the multiplicative inverse of
+ a mod m, ie: 
+\begin_inset Formula $a*x\equiv1\mod m$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $a\le1$
+\end_inset
+
+, the algorithm terminates returning 1, which trivially satisfies the invarient
+ if 
+\begin_inset Formula $a\ne0$
+\end_inset
+
+ which it must be because we assume that the gcd(a,m) is 1.
+ If 
+\begin_inset Formula $1<a$
+\end_inset
+
+ then we compute a quotient 
+\begin_inset Formula $q=m/a$
+\end_inset
+
+ such that 
+\begin_inset Formula $r\equiv a*q<a\mod m$
+\end_inset
+
+.
+ Since 
+\begin_inset Formula $r<a$
+\end_inset
+
+, the recursion terminates.
+ We are obliged to prove that 
+\begin_inset Formula $a*x\equiv1\mod m$
+\end_inset
+
+, but the function returns 
+\begin_inset Formula $x=q*v$
+\end_inset
+
+ so we are actually trying to prove that 
+\begin_inset Formula $a*q*v\equiv1\mod m$
+\end_inset
+
+.
+ However, 
+\begin_inset Formula $a*q\equiv r\mod m$
+\end_inset
+
+ so our obligation reduces to 
+\begin_inset Formula $r*v\equiv1\mod m$
+\end_inset
+
+ which matches our inductive hypothesis and nearly completes the proof.
 \end_layout
 
 \begin_layout Standard
-The choice of quotient.
- The method of finding an appropriate quotient may depend on the objective.
- 
+The sticking point is that we must also preserve as an invariant that gcd(a,m)
+ is 1.
+ This requires that 
+\begin_inset Formula $r=a*q$
+\end_inset
+
+ must also be relatively prime to m.
+ Achieving this requires that our quotient, q, be relatively prime to m.
+ If m is prime we may use any quotient 
+\begin_inset Formula $q=m/a$
+\end_inset
+
+.
+ If m is composite, we must ensure that a relatively prime quotient exists.
+ But we know that such a quotient exists because the modular inverse of
+ a, which we know exists if a and m are relatively prime, is itself relatively
+ prime to m.
+ This additional restriction on the choice of a quotient allows us to complete
+ the proof of correctness.
 \end_layout
 
-\begin_layout Standard
-The following method ensures O(log v) factors works only when the modulus
- is prime.
-\end_layout
-
-\begin_layout Section*
+\begin_layout Section
 Applications
 \end_layout
 
@@ -1017,7 +1564,7 @@ status open
 
 \begin_layout Plain Layout
 
-/a = Q /r
+/a = q /r
 \end_layout
 
 \end_inset
@@ -1059,10 +1606,6 @@ Joe
 \begin_layout Lemma
 Every number, V, less than S can be factored into 3 factor bases less than
  S.
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \end_body
