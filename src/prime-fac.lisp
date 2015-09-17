@@ -280,7 +280,7 @@ To certify this book, first, create a world with the following package:
   (if (consp lst)
       (and (primep (car lst))
 	   (prime-listp (cdr lst)))
-      t))
+    (null lst)))
 
 (defthm
   prime-listp-append
@@ -288,13 +288,6 @@ To certify this book, first, create a world with the following package:
 		(prime-listp lst2))
 	   (prime-listp (append lst1 lst2))))
 
-(defun
-  acl2-number-listp (lst)
-  (declare (xargs :guard t))
-  (if (consp lst)
-      (and (acl2-numberp (car lst))
-	   (acl2-number-listp (cdr lst)))
-      t))
 
 (defun
   product-lst (lst)
@@ -326,15 +319,6 @@ To certify this book, first, create a world with the following package:
 		     (> x 0))
 		(equal (product-lst (prime-factors x)) x)))
   :rule-classes nil)
-
-(defun
-  nat-listp (lst)
-  (declare (xargs :guard t))
-  (if (consp lst)
-      (and (integerp (car lst))
-	   (>= (car lst) 0)
-	   (nat-listp (cdr lst)))
-      t))
 
 (defthm
   natp-product-lst
