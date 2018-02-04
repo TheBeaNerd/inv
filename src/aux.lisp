@@ -714,9 +714,10 @@
     (posnatp p))
    (natp (ideal-k d p)))
   :hints ((and stable-under-simplificationp
-	       '(:use (:instance r-s-bounds
-				 (x p)
-				 (y d)))))
+	       '(:in-theory (enable pnunitp)
+                            :use (:instance r-s-bounds
+                                            (x p)
+                                            (y d)))))
   :rule-classes (:rewrite
 		 (:forward-chaining :trigger-terms ((ideal-k d p)))))
 
@@ -754,7 +755,8 @@
     (posnatp p))
    (natp (cheat-i d p)))
   :hints ((and stable-under-simplificationp
-	       '(:use (:instance r-s-bounds
+	       '(:in-theory (enable pnunitp)
+                            :use (:instance r-s-bounds
 				 (x p)
 				 (y d)))))
   :rule-classes (:rewrite

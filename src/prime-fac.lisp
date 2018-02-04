@@ -369,18 +369,40 @@ To certify this book, first, create a world with the following package:
 	   (equal (* c (nonnegative-integer-quotient w a))
 		  (nonnegative-integer-quotient (* c w) a))))
 
+(defthm primes-are-divisible-by-1
+  (implies
+   (and
+    (natp a)
+    (natp x)
+    (natp y)
+    (prime1p x y)
+    (< y x)
+    (<= a y)
+    (dividesp a x))
+   (equal a 1))
+  :rule-classes nil)
+
 (defthm
   divisors-of-primep
   (implies (and (primep p)
 		(dividesp d p))
 	   (or (equal d p)
 	       (equal d 1)))
-  :rule-classes nil
-  :hints (("Goal"
-	   :use ((:instance
-		  ACL2::divisor-<=
-		  (ACL2::n p)
-		  (ACL2::d d))))))
+  :rule-classes nil  
+  :hints (("Goal" :in-theory (e/d (zp) ())
+           :do-not-induct t)
+          (and acl2::stable-under-simplificationp
+               '(:use ((:instance
+                        ACL2::divisor-<=
+                        (ACL2::n p)
+                        (ACL2::d d)))))
+          (and acl2::stable-under-simplificationp
+               '(:use ((:instance
+                        primes-are-divisible-by-1
+                        (a d)
+                        (y (1- p))
+                        (x p)
+                        ))))))
 
 (defthm
   nonneg-int-gcd=>nonneg-int-mod

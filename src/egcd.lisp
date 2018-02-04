@@ -26,7 +26,7 @@
    (and
     (integerp p)
     (integerp d))
-   (and (integerp (mv-nth 0 (egcd p d)))
+   (and (natp (mv-nth 0 (egcd p d)))
 	(integerp (mv-nth 1 (egcd p d)))
 	(integerp (mv-nth 2 (egcd p d))))))
 
